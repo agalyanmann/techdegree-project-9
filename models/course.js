@@ -1,26 +1,28 @@
 'use strict';
-const Sequelize = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class Course extends Sequelize.Model { }
-  User.init({
+  class Course extends Model { }
+  Course.init({
     title: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     },
     description: {
-      type: Sequelize.TEXT
+      type: DataTypes.TEXT
     },
     estimatedTime: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     },
     materialsNeeded: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     }
   }, { sequelize });
 
-  User.associate = (models) => {
+  Course.associate = (models) => {
     Course.belongsTo(models.User, {
       as: 'student'
     })
-  }
+  };
+
+  return Course;
 };
