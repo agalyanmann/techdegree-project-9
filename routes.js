@@ -13,7 +13,7 @@ router.get('/users', asyncHandler(async (req, res) => {
 }));
 
 router.post('/users', asyncHandler(async (req, res) => {
-    await console.log(req.body);
+    await User.create(req.body);
     res.status(201).json({ 'message': 'user created' });
 }));
 
