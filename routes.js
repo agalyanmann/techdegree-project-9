@@ -17,4 +17,14 @@ router.post('/users', asyncHandler(async (req, res) => {
     res.status(201).json({ 'message': 'user created' });
 }));
 
+router.delete('/users/:id', asyncHandler(async (req, res) => {
+    const user = await User.findByPk(req.params.id);
+    if (user) {
+        await user.destroy();
+        res.status(201).json({ 'message': 'user deleted' });
+    } else {
+        res.status(400).json({ 'message': 'bad request' });
+    }
+}));
+
 module.exports = router;
