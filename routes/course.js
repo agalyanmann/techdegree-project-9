@@ -22,14 +22,20 @@ router.post('/courses', asyncHandler(async (req, res) => {
 }));
 
 router.put('/courses/:id', asyncHandler(async (req, res) => {
-
+    const course = await Course.findByPk(req.params.id);
+    if (course) {
+        await course.update(req.body);
+        res.status(204).json({ 'message': 'course updated' });
+    } else {
+        res.status(400).json({ 'message': 'bad request' });
+    }
 }));
 
 router.delete('/courses/:id', asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
         await course.destroy();
-        res.status(201).json({ 'message': 'course deleted' });
+        res.status(204).json({ 'message': 'course deleted' });
     } else {
         res.status(400).json({ 'message': 'bad request' });
     }
