@@ -2,12 +2,18 @@
 
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
-const { Course } = require('../models');
+const { Course, User } = require('../models');
 
 const router = express.Router();
 
 router.get('/courses', asyncHandler(async (req, res) => {
-    const courses = await Course.findAll();
+    const courses = await Course.findAll({
+        include: [
+            {
+                model: User
+            },
+        ],
+    });
     res.json(courses);
 }));
 

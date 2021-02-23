@@ -16,12 +16,12 @@ module.exports = (sequelize) => {
     materialsNeeded: {
       type: DataTypes.STRING
     }
-  }, { sequelize });
+  }, { sequelize, timestamps: false });
 
   Course.associate = (models) => {
     Course.belongsTo(models.User, {
-      as: 'student'
-    })
+      foreignKey: 'userId'
+    });
   };
 
   return Course;

@@ -20,11 +20,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     }
-  }, { sequelize });
+  }, { sequelize, timestamps: false });
 
   User.associate = (models) => {
     User.hasMany(models.Course, {
-      as: 'studnet'
+      foreignKey: 'userId'
     });
   };
 
