@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        msg: 'The emsil you entered already exist.'
+        msg: 'The email you entered already exist.'
       },
       validate: {
         notNull: {
