@@ -23,17 +23,37 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 }));
 
 router.post('/courses', asyncHandler(async (req, res) => {
-    await Course.create(req.body);
-    res.status(201).json({ 'message': 'course created' });
+    try {
+        await Course.create(req.body);
+        res.status(201).json({ 'message': 'course created' });
+    } catch (error) {
+        console.log('ERROR: ', error.name);
+
+        if (error.name === 'SequelizeValidationError') {
+            const errors = error.errors.map(error => error.message);
+            res.status(400).json({ errors });
+        } else {
+            throw error;
+        }
+    }
 }));
 
 router.put('/courses/:id', asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
-    if (course) {
-        await course.update(req.body);
-        res.status(204).json({ 'message': 'course updated' });
-    } else {
-        res.status(400).json({ 'message': 'bad request' });
+    try {
+        const course = await Course.findByPk(req.params.id);
+        if (course) {
+            await course.update(req.body);
+            res.status(204).json({ 'message': 'course updated' });
+        }
+    } catch (error) {
+        console.log('ERROR: ', error.name);
+
+        if (error.name === 'SequelizeValidationError') {
+            const errors = error.errors.map(error => error.message);
+            res.status(400).json({ errors });
+        } else {
+            throw error;
+        }
     }
 }));
 
