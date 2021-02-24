@@ -9,7 +9,9 @@ const router = express.Router();
 
 
 router.get('/users', asyncHandler(async (req, res) => {
-    const users = await User.findAll();
+    const users = await User.findAll({
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
+    });
     res.json(users);
 }));
 

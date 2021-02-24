@@ -10,9 +10,11 @@ router.get('/courses', asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
         include: [
             {
-                model: User
+                model: User,
+                attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
             },
         ],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
     });
     res.json(courses);
 }));
