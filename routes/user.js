@@ -7,7 +7,7 @@ const { User } = require('../models');
 
 const router = express.Router();
 
-
+//Get users
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const users = await User.findAll({
         attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
@@ -15,6 +15,7 @@ router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     res.json(users);
 }));
 
+//Create user
 router.post('/users', asyncHandler(async (req, res) => {
     try {
         await User.create(req.body);
@@ -31,6 +32,8 @@ router.post('/users', asyncHandler(async (req, res) => {
     }
 }));
 
+
+//Delete user
 router.delete('/users/:id', asyncHandler(async (req, res) => {
     const user = await User.findByPk(req.params.id);
     if (user) {
