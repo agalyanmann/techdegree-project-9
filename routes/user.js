@@ -7,12 +7,19 @@ const { User } = require('../models');
 
 const router = express.Router();
 
-//Get users
+//Get authenticated user
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const users = await User.findAll({
         attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
     });
-    res.json(users);
+    const { currentUser } = res.locals;
+    let returnedUser; 
+    users.forEach(user => {
+        if(user.id === currentUser.id) {
+            returnedUser = user;
+        }
+    });
+    res.json(returnedUser);
 }));
 
 //Create user
