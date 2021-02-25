@@ -26,7 +26,7 @@ router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
 router.post('/users', asyncHandler(async (req, res) => {
     try {
         await User.create(req.body);
-        res.status(201).json({ 'message': 'user created' });
+        res.redirect(201, '/');
     } catch (error) {
         console.error(error);
 
