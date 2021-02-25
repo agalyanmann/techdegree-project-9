@@ -8,7 +8,7 @@ const { User } = require('../models');
 const router = express.Router();
 
 
-router.get('/users', asyncHandler(async (req, res) => {
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const users = await User.findAll({
         attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
     });

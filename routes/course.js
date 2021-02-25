@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
+const { authenticateUser } = require('../middleware/auth-user');
 const { Course, User } = require('../models');
 
 const router = express.Router();
@@ -20,11 +21,19 @@ router.get('/courses', asyncHandler(async (req, res) => {
 }));
 
 router.get('/courses/:id', asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.params.id, {
+        include: [
+            {
+                model: User,
+                attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
+            },
+        ],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+    });
     res.json(course);
 }));
 
-router.post('/courses', asyncHandler(async (req, res) => {
+router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
         await Course.create(req.body);
         res.status(201).json({ 'message': 'course created' });
@@ -40,7 +49,7 @@ router.post('/courses', asyncHandler(async (req, res) => {
     }
 }));
 
-router.put('/courses/:id', asyncHandler(async (req, res) => {
+router.put('/courses/:id',authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course = await Course.findByPk(req.params.id);
         if (course) {
@@ -59,7 +68,7 @@ router.put('/courses/:id', asyncHandler(async (req, res) => {
     }
 }));
 
-router.delete('/courses/:id', asyncHandler(async (req, res) => {
+router.delete('/courses/:id',authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
         await course.destroy();
