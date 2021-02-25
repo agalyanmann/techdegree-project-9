@@ -3,7 +3,6 @@
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
-const { restrictAuth } = require('../middleware/restrict-auth');
 const { Course, User } = require('../models');
 
 const router = express.Router();
@@ -55,12 +54,12 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
         const course = await Course.findByPk(req.params.id);
         const { currentUser } = res.locals;
         if (course) {
-            if (course.userID == currentUser.id) {
+            if (course.userID === currentUser.id) {
                 await course.update(req.body);
                 res.status(204).json({ 'message': 'course updated' });
             } else {
                 res.status(403).json({ 'message': 'Access denied, you must be the owner of the course to make changes.' });
-                console.log(`${course.userId + ' ' + currentUser.id}`);
+                console.log(`Course Owner: ${course.userId + ' ' + 'Current User ID: ' + currentUser.id}`);
             }
         }
     } catch (error) {
