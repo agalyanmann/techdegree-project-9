@@ -39,7 +39,8 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course = await Course.create(req.body);
-        res.status(201).json({ 'message': 'course created' });
+        res.redirect(201, `/courses/${course.id}` );
+        // res.status(201).json({ 'message': 'course created' });
         console.log(course);
     } catch (error) {
         console.error(error);
