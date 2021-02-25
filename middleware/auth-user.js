@@ -16,11 +16,12 @@ exports.authenticateUser = async (req, res, next) => {
             if (authenticated) {
                 console.log(`Authentication successful for username: ${user.firstName + ' ' + user.lastName}`);
                 req.currentUser = user;
+                res.locals.currentUser = user;
             } else {
-                message = `Authentication failure for username: ${user.firstName + ' ' + user.lastName}`;
+                message = `Authentication failure`;
             }
         } else {
-            message = `User not found for username: ${user.firstName + ' ' + user.lastName}`;
+            message = `User not found`;
         }
     } else {
         message = `Auth header not found`

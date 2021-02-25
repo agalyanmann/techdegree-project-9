@@ -3,6 +3,7 @@
 const express = require('express');
 const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
+const { restrictAuth } = require('../middleware/restrict-auth');
 const { Course, User } = require('../models');
 
 const router = express.Router();
@@ -38,7 +39,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
         await Course.create(req.body);
         res.status(201).json({ 'message': 'course created' });
     } catch (error) {
-        console.log('ERROR: ', error.name);
+        console.error(error);
 
         if (error.name === 'SequelizeValidationError') {
             const errors = error.errors.map(error => error.message);
@@ -49,15 +50,21 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     }
 }));
 
-router.put('/courses/:id',authenticateUser, asyncHandler(async (req, res) => {
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course = await Course.findByPk(req.params.id);
+        const { currentUser } = res.locals;
         if (course) {
-            await course.update(req.body);
-            res.status(204).json({ 'message': 'course updated' });
+            if (course.userID == currentUser.id) {
+                await course.update(req.body);
+                res.status(204).json({ 'message': 'course updated' });
+            } else {
+                res.status(403).json({ 'message': 'Access denied, you must be the owner of the course to make changes.' });
+                console.log(`${course.userId + ' ' + currentUser.id}`);
+            }
         }
     } catch (error) {
-        console.log('ERROR: ', error.name);
+        console.error(error);
 
         if (error.name === 'SequelizeValidationError') {
             const errors = error.errors.map(error => error.message);
@@ -68,7 +75,7 @@ router.put('/courses/:id',authenticateUser, asyncHandler(async (req, res) => {
     }
 }));
 
-router.delete('/courses/:id',authenticateUser, asyncHandler(async (req, res) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
         await course.destroy();
